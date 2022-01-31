@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  mongo_one:
+    container_name: mongo-rs-1
+    build:
+      context: "./"
+      dockerfile: mongo.Dockerfile
+    ports:
+      - 27017
+    environment:
+      - MONGO_INITDB_DATABASE=auth-control
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    depends_on: [mongo_two, mongo_three]
+
+  mongo_two:
+    build:
+      context: "./"
+      dockerfile: mongo.Dockerfile
+    container_name: mongo-rs-2
+    ports:
+      - 27017
+
+  mongo_three:
+    build:
+      context: "./"
+      dockerfile: mongo.Dockerfile
+    container_name: mongo-rs-3
+    ports:
+      - 27017
+    
+  setup:
+    build:
+      context: "./"
+      dockerfile: setup.Dockerfile
+    depends_on: [mongo_one]
